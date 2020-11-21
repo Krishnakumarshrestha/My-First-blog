@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width">
+<meta property="og:title" content="Bar Plot with ggplot2" />
+
+
+
+
+<meta name="author" content="Krishna Kumar Shrestha" />
+
+<meta name="date" content="2020-11-21" />
+
+<meta name="description" content="Bar Plot with ggplot2">
+
+<script id="pandoc-meta" type="application/json">
+{"newpage_html_class":"page-break-after","date":"2020-11-21","output":{"pagedown::html_paged":{"self_contained":null,"toc":"true"}},"author":"Krishna Kumar Shrestha","knit":"pagedown::chrome_print","title":"Bar Plot with ggplot2"}
+</script>
+
+<title>Bar Plot with ggplot2</title>
+
+
+<script src="index_files/header-attrs-2.5/header-attrs.js"></script>
+<link href="index_files/paged-0.12/css/default-fonts.css" rel="stylesheet" />
+<link href="index_files/paged-0.12/css/default-page.css" rel="stylesheet" />
+<link href="index_files/paged-0.12/css/default.css" rel="stylesheet" />
+<script src="index_files/paged-0.12/js/config.js"></script>
+<script src="index_files/paged-0.12/js/paged.js"></script>
+<script src="index_files/paged-0.12/js/hooks.js"></script>
+<script src="index_files/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="index_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="index_files/anchor-sections-1.0/anchor-sections.js"></script>
+<script src="index_files/htmlwidgets-1.5.2/htmlwidgets.js"></script>
+<script src="index_files/plotly-binding-4.9.2.1/plotly.js"></script>
+<script src="index_files/typedarray-0.1/typedarray.min.js"></script>
+<script src="index_files/jquery-1.11.3/jquery.min.js"></script>
+<link href="index_files/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet" />
+<script src="index_files/crosstalk-1.1.0.1/js/crosstalk.min.js"></script>
+<link href="index_files/plotly-htmlwidgets-css-1.52.2/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="index_files/plotly-main-1.52.2/plotly-latest.min.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+
+</head>
+
+<body>
+
+<div class="running-h1-title"></div>
+
+<div class="running-h2-title"></div>
+
+
+
+<div class="front-page">
+<div id="header" class="title-page">
+<h1 class="title">Bar Plot with ggplot2</h1>
+<h2 class="author">Krishna Kumar Shrestha</h2>
+<h2 class="date">2020-11-21</h2>
+</div>
+</div>
+
+<div class="front-matter-container">
+<div id="TOC" class="level1 toc front-matter">
+<ul>
+<li><a href="#lets-plot"><span class="toc-section-number">1</span> lets plot</a></li>
+</ul>
+</div>
+</div>
+
+<div class="main">
+<p><strong>Creating a bar plot is very easy using ggplot2 . I will be using chicksweight data for this example</strong></p>
+<p><em>first lets load the package</em></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(ggplot2)</span></code></pre></div>
+<pre><code>## Warning: package &#39;ggplot2&#39; was built under R version 3.6.3</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">library</span>(ggthemes)</span></code></pre></div>
+<pre><code>## Warning: package &#39;ggthemes&#39; was built under R version 3.6.3</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">library</span>(dplyr)</span></code></pre></div>
+<pre><code>## Warning: package &#39;dplyr&#39; was built under R version 3.6.3</code></pre>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw">data</span>(<span class="st">&quot;chickwts&quot;</span>)</span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="kw">str</span>(chickwts)</span></code></pre></div>
+<pre><code>## &#39;data.frame&#39;:    71 obs. of  2 variables:
+##  $ weight: num  179 160 136 227 217 168 108 124 143 140 ...
+##  $ feed  : Factor w/ 6 levels &quot;casein&quot;,&quot;horsebean&quot;,..: 2 2 2 2 2 2 2 2 2 2 ...</code></pre>
+<div id="lets-plot" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> lets plot</h1>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>plot1&lt;-chickwts <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb12-2"><a href="#cb12-2"></a><span class="st">  </span><span class="kw">count</span>(feed) <span class="op">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3"></a><span class="st">  </span><span class="kw">ggplot</span>() <span class="op">+</span></span>
+<span id="cb12-4"><a href="#cb12-4"></a><span class="st">  </span><span class="kw">aes</span>(<span class="dt">x=</span>feed,<span class="dt">weights=</span>n)<span class="op">+</span></span>
+<span id="cb12-5"><a href="#cb12-5"></a><span class="st">  </span><span class="kw">geom_bar</span>(<span class="kw">aes</span>(<span class="dt">fill=</span>feed))<span class="op">+</span></span>
+<span id="cb12-6"><a href="#cb12-6"></a><span class="st">  </span><span class="kw">ylim</span>(<span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">20</span>))<span class="op">+</span></span>
+<span id="cb12-7"><a href="#cb12-7"></a><span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">x=</span>feed,<span class="dt">y=</span>n,<span class="dt">label=</span><span class="kw">paste0</span>(<span class="st">&quot;N=&quot;</span>,n)),<span class="dt">vjust=</span><span class="op">-</span><span class="fl">0.3</span>)<span class="op">+</span></span>
+<span id="cb12-8"><a href="#cb12-8"></a><span class="st">  </span><span class="kw">labs</span>(</span>
+<span id="cb12-9"><a href="#cb12-9"></a>    <span class="dt">title =</span> <span class="st">&quot;Bar plot&quot;</span>,</span>
+<span id="cb12-10"><a href="#cb12-10"></a>    <span class="dt">subtitle =</span> <span class="kw">paste0</span>(<span class="st">&quot;ggplot2&quot;</span>)</span>
+<span id="cb12-11"><a href="#cb12-11"></a>  )<span class="op">+</span><span class="kw">theme_economist</span>()</span>
+<span id="cb12-12"><a href="#cb12-12"></a>plot1</span></code></pre></div>
+<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p><em>lets add simple interactivity using plotly</em></p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>plotly<span class="op">::</span><span class="kw">ggplotly</span>(plot1)</span></code></pre></div>
+<div id="htmlwidget-3ac6cb744b45b2a83448" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-3ac6cb744b45b2a83448">{"x":{"data":[{"orientation":"v","width":0.9,"base":0,"x":[1],"y":[12],"text":"count: 12<br />feed: casein<br />feed: casein<br />n: 12","type":"bar","marker":{"autocolorscale":false,"color":"rgba(248,118,109,1)","line":{"width":1.88976377952756,"color":"transparent"}},"name":"casein","legendgroup":"casein","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":0.9,"base":0,"x":[2],"y":[10],"text":"count: 10<br />feed: horsebean<br />feed: horsebean<br />n: 10","type":"bar","marker":{"autocolorscale":false,"color":"rgba(183,159,0,1)","line":{"width":1.88976377952756,"color":"transparent"}},"name":"horsebean","legendgroup":"horsebean","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":0.9,"base":0,"x":[3],"y":[12],"text":"count: 12<br />feed: linseed<br />feed: linseed<br />n: 12","type":"bar","marker":{"autocolorscale":false,"color":"rgba(0,186,56,1)","line":{"width":1.88976377952756,"color":"transparent"}},"name":"linseed","legendgroup":"linseed","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":0.9,"base":0,"x":[4],"y":[11],"text":"count: 11<br />feed: meatmeal<br />feed: meatmeal<br />n: 11","type":"bar","marker":{"autocolorscale":false,"color":"rgba(0,191,196,1)","line":{"width":1.88976377952756,"color":"transparent"}},"name":"meatmeal","legendgroup":"meatmeal","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":0.9,"base":0,"x":[5],"y":[14],"text":"count: 14<br />feed: soybean<br />feed: soybean<br />n: 14","type":"bar","marker":{"autocolorscale":false,"color":"rgba(97,156,255,1)","line":{"width":1.88976377952756,"color":"transparent"}},"name":"soybean","legendgroup":"soybean","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":0.9,"base":0,"x":[6],"y":[12],"text":"count: 12<br />feed: sunflower<br />feed: sunflower<br />n: 12","type":"bar","marker":{"autocolorscale":false,"color":"rgba(245,100,227,1)","line":{"width":1.88976377952756,"color":"transparent"}},"name":"sunflower","legendgroup":"sunflower","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6],"y":[12,10,12,11,14,12],"text":["N=12","N=10","N=12","N=11","N=14","N=12"],"hovertext":["feed: casein<br />n: 12<br />paste0(\"N=\", n): N=12<br />feed: casein<br />n: 12","feed: horsebean<br />n: 10<br />paste0(\"N=\", n): N=10<br />feed: horsebean<br />n: 10","feed: linseed<br />n: 12<br />paste0(\"N=\", n): N=12<br />feed: linseed<br />n: 12","feed: meatmeal<br />n: 11<br />paste0(\"N=\", n): N=11<br />feed: meatmeal<br />n: 11","feed: soybean<br />n: 14<br />paste0(\"N=\", n): N=14<br />feed: soybean<br />n: 14","feed: sunflower<br />n: 12<br />paste0(\"N=\", n): N=12<br />feed: sunflower<br />n: 12"],"textfont":{"size":14.6645669291339,"color":"rgba(0,0,0,1)"},"type":"scatter","mode":"text","hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":53.8580323785803,"r":13.2835201328352,"b":38.5222083852221,"l":35.8655043586551},"plot_bgcolor":"transparent","paper_bgcolor":"rgba(213,228,235,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"title":{"text":"<b> Bar plot <\/b>","font":{"color":"rgba(0,0,0,1)","family":"","size":21.9178082191781},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.4,6.6],"tickmode":"array","ticktext":["casein","horsebean","linseed","meatmeal","soybean","sunflower"],"tickvals":[1,2,3,4,5,6],"categoryorder":"array","categoryarray":["casein","horsebean","linseed","meatmeal","soybean","sunflower"],"nticks":null,"ticks":"outside","tickcolor":"rgba(0,0,0,1)","ticklen":-6.6417600664176,"tickwidth":0.66417600664176,"showticklabels":true,"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.531340805313408,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"y","title":{"text":"feed","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-1,21],"tickmode":"array","ticktext":["0","5","10","15","20"],"tickvals":[0,5,10,15,20],"categoryorder":"array","categoryarray":["0","5","10","15","20"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":-6.6417600664176,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":1.16230801162308,"zeroline":false,"anchor":"x","title":{"text":"count","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":"transparent","bordercolor":"transparent","borderwidth":1.88976377952756,"font":{"color":"rgba(0,0,0,1)","family":"","size":18.2648401826484},"y":0.96751968503937},"annotations":[{"text":"feed","x":1.02,"y":1,"showarrow":false,"ax":0,"ay":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"xref":"paper","yref":"paper","textangle":-0,"xanchor":"left","yanchor":"bottom","legendTitle":true}],"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","showSendToCloud":false},"source":"A","attrs":{"2fd86a1c5f6f":{"fill":{},"x":{},"weights":{},"type":"bar"},"2fd875284546":{"x":{},"y":{},"label":{},"x.1":{},"weights":{}}},"cur_data":"2fd86a1c5f6f","visdat":{"2fd86a1c5f6f":["function (y) ","x"],"2fd875284546":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+
+
+
+<script>
+// when the page is about to reload via servr, remember the scroll position
+document.addEventListener('servr:reload', function(e) {
+  sessionStorage.setItem('pagedown-scroll', window.scrollY);
+});
+</script>
+</body>
+</html>

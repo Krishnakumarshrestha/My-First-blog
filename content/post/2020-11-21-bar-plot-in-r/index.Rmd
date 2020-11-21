@@ -1,0 +1,47 @@
+---
+title: "Bar Plot with ggplot2"
+author: "Krishna Kumar Shrestha"
+date: "`r Sys.Date()`"
+output:
+  pagedown::html_paged:
+    toc: true
+    # change to true for a self-contained document, but it'll be a litte slower for Pandoc to render
+    self_contained: false
+# uncomment this line to produce HTML and PDF in RStudio:
+knit: pagedown::chrome_print
+---
+
+**Creating a bar plot is very easy using ggplot2 . I will be using chicksweight data for this example**
+
+*first lets load the package*
+
+```{r}
+library(ggplot2)
+library(ggthemes)
+library(dplyr)
+data("chickwts")
+str(chickwts)
+```
+
+# lets plot 
+
+```{r}
+plot1<-chickwts %>% 
+  count(feed) %>%
+  ggplot() +
+  aes(x=feed,weights=n)+
+  geom_bar(aes(fill=feed))+
+  ylim(c(0,20))+
+  geom_text(aes(x=feed,y=n,label=paste0("N=",n)),vjust=-0.3)+
+  labs(
+    title = "Bar plot",
+    subtitle = paste0("ggplot2")
+  )+theme_economist()
+plot1
+```
+
+*lets add simple interactivity using plotly*
+
+```{r}
+plotly::ggplotly(plot1)
+```
