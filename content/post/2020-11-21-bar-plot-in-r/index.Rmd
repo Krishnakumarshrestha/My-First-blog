@@ -23,7 +23,7 @@ data("chickwts")
 str(chickwts)
 ```
 
-# lets plot 
+# lets plot
 
 ```{r}
 plot1<-chickwts %>% 
