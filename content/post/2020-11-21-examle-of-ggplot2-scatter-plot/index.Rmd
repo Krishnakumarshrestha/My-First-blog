@@ -1,0 +1,12 @@
+---
+title: Examle of ggplot2:Scatter plot
+author: '''krishsth1'''
+date: '2020-11-21'
+slug: []
+categories: []
+tags: []
+---
+
+
+
+lets try once
