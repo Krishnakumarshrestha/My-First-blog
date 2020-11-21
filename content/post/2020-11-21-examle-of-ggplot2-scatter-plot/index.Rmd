@@ -7,6 +7,33 @@ categories: []
 tags: []
 ---
 
+**ggplot is one of the very popular package in R programming which will make your coding life very easy. Using this package we can create beautiful plot easily .**
+
+*I will be using mtcars data set for this example*
+
+first lets start with loading package.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+#install.packages("ggplot2")
+library(ggplot2)
+library(dplyr)
+data("mtcars")
+head(mtcars,5)
 
 
-lets try once
+
+```
+
+**now lets plot gross horsepower on x axis and weight on y axis**
+
+```{r,fig.align='center'}
+mtcars %>%
+  ggplot()+
+  aes(x=hp,y=wt)+
+  geom_point()+
+  xlab("gross horsepower")+
+  ylab("weight")+
+  ggtitle("Scatter plot") +
+  theme_bw()
+
+```
