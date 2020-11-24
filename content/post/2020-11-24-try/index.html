@@ -1,0 +1,714 @@
+---
+title: "Multipale Regression"
+author: "Krishna Kumar Shrestha"
+date: "2020-11-24"
+output: 
+  html_document: 
+    theme: cosmo
+---
+
+<script src="index_files/header-attrs/header-attrs.js"></script>
+<link href="index_files/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="index_files/anchor-sections/anchor-sections.js"></script>
+
+
+<div id="excersis-21.1" class="section level1">
+<h1>Excersis 21.1</h1>
+<p><strong>In the MASS package, you’ll find the data frame cats, which provides
+data on sex, body weight (in kilograms), and heart weight (in grams)
+for 144 household cats (see Venables and Ripley, 2002, for further
+details); you can read the documentation with a call to ?cats. Load
+the MASS package with a call to library(“MASS”), and access the object
+directly by entering cats at the console prompt.</strong></p>
+<ol style="list-style-type: lower-alpha">
+<li>Plot heart weight on the vertical axis and body weight on the
+horizontal axis, using different colors or point characters to
+distinguish between male and female cats. Annotate your plot
+with a legend and appropriate axis labels.</li>
+</ol>
+<pre class="r"><code>data(&quot;cats&quot;)
+cats %&gt;%
+  ggplot()+
+  aes(x=Bwt,y=Hwt,col=Sex)+
+  geom_point()+
+  theme(
+    legend.position = c(0.01,1),
+    legend.justification = c(&quot;left&quot;, &quot;top&quot;),
+    legend.box.just = &quot;right&quot;,
+    legend.margin = margin(6, 6, 6, 6)
+    )</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>Fit a least-squares multiple linear regression model using heart
+weight as the response variable and the other two variables as
+predictors, and view a model summary.</li>
+</ol>
+<pre class="r"><code>model1 &lt;- lm(Hwt ~ Bwt + Sex, data = cats)
+summary(model1)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Hwt ~ Bwt + Sex, data = cats)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -3.5833 -0.9700 -0.0948  1.0432  5.1016 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  -0.4149     0.7273  -0.571    0.569    
+## Bwt           4.0758     0.2948  13.826   &lt;2e-16 ***
+## SexM         -0.0821     0.3040  -0.270    0.788    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.457 on 141 degrees of freedom
+## Multiple R-squared:  0.6468, Adjusted R-squared:  0.6418 
+## F-statistic: 129.1 on 2 and 141 DF,  p-value: &lt; 2.2e-16</code></pre>
+<ol style="list-style-type: lower-roman">
+<li>Write down the equation for the fitted model and interpret
+the estimated regression coefficients for body weight and
+sex. Are both statistically significant? What does this say
+about the relationship between the response and predictors?</li>
+</ol>
+<blockquote>
+<p>the Equation is: y = -0.4149 + 4.0758<em>Bwt - 0.0821</em>SexM</p>
+</blockquote>
+<p>Ans:<strong>From the summary table , we can see that p value of Bwt is less then 0.05 which means the variable is significant for the model where as the sex variable have p value more then 0.05, so the variable is insignificant for the model</strong></p>
+<ol start="2" style="list-style-type: lower-roman">
+<li>Report and interpret the coefficient of determination and
+the outcome of the omnibus F -test.</li>
+</ol>
+<p>Ans:<strong>The coefficient of determination is 0.6468. It means that 65% of the variation of the Hwt can be explained by the model.even if it includes a not statistical relevant predictor variable in the model. </strong></p>
+<ol start="3" style="list-style-type: lower-alpha">
+<li>Tilman’s cat, Sigma, is a 3.4 kg female. Use your model to estimate
+her mean heart weight and provide a 95 percent prediction
+interval.</li>
+</ol>
+<pre class="r"><code>newdata = data.frame(Bwt = (3.4), Sex = (&quot;F&quot;))
+predict(model1,
+        newdata,
+        interval = &quot;prediction&quot;)</code></pre>
+<pre><code>##        fit      lwr      upr
+## 1 13.44266 10.46904 16.41628</code></pre>
+<ol start="4" style="list-style-type: lower-alpha">
+<li>Use predict to superimpose continuous lines based on the fitted
+linear model on your plot from (a), one for male cats and one
+for female. What do you notice? Does this reflect the statistical
+significance (or lack thereof) of the parameter estimates?</li>
+</ol>
+<pre class="r"><code>cats %&gt;%
+  ggplot()+
+  aes(x=Bwt,y=Hwt,col=Sex)+
+  geom_point()+
+  theme(
+    legend.position = c(0.01,1),
+    legend.justification = c(&quot;left&quot;, &quot;top&quot;),
+    legend.box.just = &quot;right&quot;,
+    legend.margin = margin(6, 6, 6, 6)
+    ) +
+  geom_smooth(method = &quot;lm&quot;,aes(col=Sex),se=0)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>The boot package (Davison and Hinkley, 1997; Canty and Ripley,
+2015) is another library of R code that’s included with the standard
+installation but isn’t automatically loaded. Load boot with a call to
+library(“boot”). You’ll find a data frame called nuclear, which contains
+data on the construction of nuclear power plants in the United States
+in the late 1960s (Cox and Snell, 1981).
+e. Access the documentation by entering ?nuclear at the prompt
+and examine the details of the variables. (Note there is a mistake
+for date, which provides the date that the construction permits
+were issued—it should read “measured in years since January
+1 1900 to the nearest month.”) Use pairs to produce a quick
+scatterplot matrix of the data.</p>
+<pre class="r"><code>library(boot)
+data(&quot;nuclear&quot;)
+pairs(nuclear)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<ol start="6" style="list-style-type: lower-alpha">
+<li>One of the original objectives was to predict the cost of further
+construction of these power plants. Create a fit and summary of
+a linear regression model that aims to model cost by t1 and t2,
+two variables that describe different elapsed times associated with
+the application for and issue of various permits. Take note of the
+estimated regression coefficients and their significance in the
+fitted model.</li>
+</ol>
+<pre class="r"><code>model2 &lt;- lm(cost ~ t1 + t2, data = nuclear)
+summary(model2)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = cost ~ t1 + t2, data = nuclear)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -273.17  -73.42  -13.40   69.31  360.61 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)   
+## (Intercept) -242.146    268.020  -0.903  0.37373   
+## t1            29.908      9.086   3.292  0.00262 **
+## t2             4.689      2.945   1.592  0.12224   
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 150.1 on 29 degrees of freedom
+## Multiple R-squared:  0.272,  Adjusted R-squared:  0.2218 
+## F-statistic: 5.418 on 2 and 29 DF,  p-value: 0.01001</code></pre>
+<ol start="7" style="list-style-type: lower-alpha">
+<li>Refit the model, but this time also include an effect for the date
+the construction permit was issued. Contrast the output for this
+new model against the previous one. What do you notice, and
+what does this information suggest about the relationships in the
+data with respect to these predictors?</li>
+</ol>
+<pre class="r"><code>model3 &lt;- lm(cost ~ t1 + t2 + date, data = nuclear)
+summary(model3)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = cost ~ t1 + t2 + date, data = nuclear)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -208.63  -90.74  -12.07   59.78  324.19 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)   
+## (Intercept) -9232.833   2974.432  -3.104  0.00434 **
+## t1             -5.918     14.281  -0.414  0.68176   
+## t2              4.639      2.601   1.784  0.08535 . 
+## date          138.324     45.617   3.032  0.00519 **
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 132.5 on 28 degrees of freedom
+## Multiple R-squared:  0.452,  Adjusted R-squared:  0.3933 
+## F-statistic: 7.698 on 3 and 28 DF,  p-value: 0.000667</code></pre>
+<ol start="8" style="list-style-type: lower-alpha">
+<li>Fit a third model for power plant cost, using the predictors for
+“date of permit issue,” “power plant capacity,” and the binary
+variable describing whether the plant was sited in the northeastern
+United States. Write down the fitted model equation
+and provide 95 percent confidence intervals for each estimated
+coefficient.</li>
+</ol>
+<pre class="r"><code>model4 &lt;- lm(cost ~ date + cap + ne, data = nuclear)
+summary(model4)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = cost ~ date + cap + ne, data = nuclear)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -154.966  -68.202   -3.614   45.919  285.014 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -6.458e+03  1.216e+03  -5.310 1.19e-05 ***
+## date         9.544e+01  1.773e+01   5.382 9.77e-06 ***
+## cap          4.157e-01  9.463e-02   4.393 0.000145 ***
+## ne           1.261e+02  4.092e+01   3.083 0.004575 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 99.74 on 28 degrees of freedom
+## Multiple R-squared:  0.6895, Adjusted R-squared:  0.6562 
+## F-statistic: 20.73 on 3 and 28 DF,  p-value: 2.827e-07</code></pre>
+<pre class="r"><code>#Equation is: -6458.3889006 +95.4385587*date + 0.4157157*cap + 126.1287688*ne
+confint(model4)</code></pre>
+<pre><code>##                     2.5 %        97.5 %
+## (Intercept) -8949.8032112 -3966.9745900
+## date           59.1134640   131.7636535
+## cap             0.2218791     0.6095524
+## ne             42.3145363   209.9430014</code></pre>
+<p>The following table gives an excerpt of a historical data set compiled
+between 1961 and 1973. It concerns the annual murder rate in
+Detroit, Michigan; the data were originally presented and analyzed
+by Fisher (1976) and are reproduced here from Harraway (1995).
+In the data set you’ll find the number of murders, police officers,
+and gun licenses issued per 100,000 population, as well as the overall
+unemployment rate as a percentage of the overall population.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:right;">
+Murders
+</th>
+<th style="text-align:right;">
+Police
+</th>
+<th style="text-align:right;">
+Unemployment
+</th>
+<th style="text-align:right;">
+Guns
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+8.60
+</td>
+<td style="text-align:right;">
+260.35
+</td>
+<td style="text-align:right;">
+11.0
+</td>
+<td style="text-align:right;">
+178.15
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8.90
+</td>
+<td style="text-align:right;">
+269.80
+</td>
+<td style="text-align:right;">
+7.0
+</td>
+<td style="text-align:right;">
+156.41
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8.52
+</td>
+<td style="text-align:right;">
+272.04
+</td>
+<td style="text-align:right;">
+5.2
+</td>
+<td style="text-align:right;">
+198.02
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8.89
+</td>
+<td style="text-align:right;">
+272.96
+</td>
+<td style="text-align:right;">
+4.3
+</td>
+<td style="text-align:right;">
+222.10
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+13.07
+</td>
+<td style="text-align:right;">
+272.51
+</td>
+<td style="text-align:right;">
+3.5
+</td>
+<td style="text-align:right;">
+301.92
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+14.57
+</td>
+<td style="text-align:right;">
+261.26
+</td>
+<td style="text-align:right;">
+3.2
+</td>
+<td style="text-align:right;">
+391.22
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+21.36
+</td>
+<td style="text-align:right;">
+268.89
+</td>
+<td style="text-align:right;">
+4.1
+</td>
+<td style="text-align:right;">
+665.56
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+28.03
+</td>
+<td style="text-align:right;">
+295.99
+</td>
+<td style="text-align:right;">
+3.9
+</td>
+<td style="text-align:right;">
+1131.21
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+31.49
+</td>
+<td style="text-align:right;">
+319.87
+</td>
+<td style="text-align:right;">
+3.6
+</td>
+<td style="text-align:right;">
+837.60
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+37.39
+</td>
+<td style="text-align:right;">
+341.43
+</td>
+<td style="text-align:right;">
+7.1
+</td>
+<td style="text-align:right;">
+794.90
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+46.26
+</td>
+<td style="text-align:right;">
+356.59
+</td>
+<td style="text-align:right;">
+8.4
+</td>
+<td style="text-align:right;">
+817.74
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+47.24
+</td>
+<td style="text-align:right;">
+376.69
+</td>
+<td style="text-align:right;">
+7.7
+</td>
+<td style="text-align:right;">
+583.17
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+52.33
+</td>
+<td style="text-align:right;">
+390.19
+</td>
+<td style="text-align:right;">
+6.3
+</td>
+<td style="text-align:right;">
+709.59
+</td>
+</tr>
+</tbody>
+</table>
+<ol style="list-style-type: lower-roman">
+<li>Create your own data frame in your R workspace and produce
+a scatterplot matrix. Which of the variables appears to be most
+strongly related to the murder rate?</li>
+</ol>
+<pre class="r"><code>pairs(security)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<ol start="10" style="list-style-type: lower-alpha">
+<li>Fit a multiple linear regression model using the number of
+murders as the response and all other variables as predictors.
+Write down the model equation and interpret the coefficients. Is
+it reasonable to state that all relationships between the response
+and the predictors are causal?</li>
+</ol>
+<pre class="r"><code>model5&lt;-lm(Murders~Police+Unemployment+Guns,data=security)
+summary(model5)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Murders ~ Police + Unemployment + Guns, data = security)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -2.8453 -1.9445  0.2011  0.9195  4.6652 
+## 
+## Coefficients:
+##                Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  -68.835174   5.868731 -11.729 9.35e-07 ***
+## Police         0.280761   0.024686  11.373 1.21e-06 ***
+## Unemployment   0.146590   0.408762   0.359   0.7281    
+## Guns           0.014176   0.003542   4.002   0.0031 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2.893 on 9 degrees of freedom
+## Multiple R-squared:  0.9766, Adjusted R-squared:  0.9688 
+## F-statistic: 125.3 on 3 and 9 DF,  p-value: 1.171e-07</code></pre>
+<pre class="r"><code>#It is not reasonable to state that all relationshipps between response and 
+#predictors are casual. We can see that Guns also presents a strong statistical 
+# evidence of relationship with murders.</code></pre>
+<ol start="11" style="list-style-type: lower-alpha">
+<li>Identify the amount of variation in the response attributed to
+the joint effect of the three explanatory variables. Then refit the
+model excluding the predictor associated with the largest (in
+other words, “most nonsignificant”) p-value. Compare the new
+coefficient of determination with that of the previous model. Is
+there much difference?</li>
+</ol>
+<pre class="r"><code>model&lt;-lm(Murders~Police+Guns,data=security)
+summary(model)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Murders ~ Police + Guns, data = security)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -2.9453 -2.1083  0.2744  0.9578  4.6368 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -68.985033   5.592973 -12.334 2.26e-07 ***
+## Police        0.284992   0.020717  13.756 8.01e-08 ***
+## Guns          0.013638   0.003065   4.449  0.00124 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2.764 on 10 degrees of freedom
+## Multiple R-squared:  0.9763, Adjusted R-squared:  0.9715 
+## F-statistic: 205.8 on 2 and 10 DF,  p-value: 7.501e-09</code></pre>
+<pre class="r"><code>#Removing the unemployment predictor variable there is a much better statistical
+#relation between the predictors and the answer. But hte model keeps having a 
+#great prediction capability.</code></pre>
+<ol start="12" style="list-style-type: lower-alpha">
+<li>Use your model from (k) to predict the mean number of murders
+per 100,000 residents, with 300 police officers and 500
+issued gun licenses. Compare this to the mean response if there
+were no gun licenses issued and provide 99 percent confidence
+intervals for both predictions.</li>
+</ol>
+<pre class="r"><code>newdata = data.frame(Police = 300, Guns = c(500, 0))
+predict.lm(
+      model,
+      newdata = newdata,
+      interval = &quot;confidence&quot;,
+      level = 0.99
+)</code></pre>
+<pre><code>##        fit      lwr      upr
+## 1 23.33141 20.88171 25.78112
+## 2 16.51253 10.89978 22.12529</code></pre>
+</div>
+<div id="exercise-21.2" class="section level1">
+<h1>Exercise 21.2</h1>
+<p>The following table presents data collected in one of Galileo’s
+famous “ball” experiments, in which he rolled a ball down a ramp
+of different heights and measured how far it traveled from the
+base of the ramp. For more on this and other interesting examples,
+look at “Teaching Statistics with Data of Historic Significance” by
+Dickey and Arnold (1995).</p>
+<ol style="list-style-type: lower-alpha">
+<li>Create a data frame in R based on this table and plot the data
+points with distance on the y-axis.</li>
+</ol>
+<pre class="r"><code>Galileu&lt;-data.frame(Iniheight=c(1000,800,600,450,300,200,100),
+                    Dist=c(573,534,495,451,395,337,257))
+
+kableExtra::kable(Galileu)</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:right;">
+Iniheight
+</th>
+<th style="text-align:right;">
+Dist
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1000
+</td>
+<td style="text-align:right;">
+573
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+800
+</td>
+<td style="text-align:right;">
+534
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+600
+</td>
+<td style="text-align:right;">
+495
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+450
+</td>
+<td style="text-align:right;">
+451
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+300
+</td>
+<td style="text-align:right;">
+395
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+200
+</td>
+<td style="text-align:right;">
+337
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+100
+</td>
+<td style="text-align:right;">
+257
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>Galileu %&gt;%
+  ggplot()+
+  aes(x=Dist,y=Iniheight)+
+  geom_point()+
+  ggtitle(&quot;Distance Traveled Vs. Initial Height&quot;)+
+  xlab(&quot;Initial Height&quot;)+
+  ylab(&quot;Distance&quot;)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>Galileo believed there was a quadratic relationship between
+initial height and the distance traveled.</li>
+<li>Fit an order 2 polynomial in height, with distance as the
+response.</li>
+</ol>
+<pre class="r"><code>m.2&lt;-lm(Dist~Iniheight+I(Iniheight^2),data=Galileu)
+summary(m.2)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Dist ~ Iniheight + I(Iniheight^2), data = Galileu)
+## 
+## Residuals:
+##       1       2       3       4       5       6       7 
+##   8.011 -12.130  -5.573   2.115  12.821   7.634 -12.878 
+## 
+## Coefficients:
+##                  Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)     2.037e+02  1.549e+01  13.154 0.000193 ***
+## Iniheight       6.950e-01  6.914e-02  10.052 0.000551 ***
+## I(Iniheight^2) -3.337e-04  6.171e-05  -5.408 0.005662 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 12.6 on 4 degrees of freedom
+## Multiple R-squared:  0.9916, Adjusted R-squared:  0.9874 
+## F-statistic: 235.9 on 2 and 4 DF,  p-value: 7.065e-05</code></pre>
+<ol start="2" style="list-style-type: lower-roman">
+<li>Fit a cubic (order 3) and a quartic (order 4) model for
+these data. What do they tell you about the nature of the
+relationship?</li>
+</ol>
+<pre class="r"><code>m.3&lt;-lm(Dist~Iniheight+I(Iniheight^2)+I(Iniheight^3),data=Galileu)
+summary(m.3)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Dist ~ Iniheight + I(Iniheight^2) + I(Iniheight^3), 
+##     data = Galileu)
+## 
+## Residuals:
+##       1       2       3       4       5       6       7 
+## -0.6526  1.7768  0.1060 -3.8552  1.9856  2.4273 -1.7880 
+## 
+## Coefficients:
+##                  Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)     1.626e+02  6.726e+00  24.176 0.000155 ***
+## Iniheight       1.074e+00  5.305e-02  20.248 0.000263 ***
+## I(Iniheight^2) -1.173e-03  1.118e-04 -10.493 0.001848 ** 
+## I(Iniheight^3)  5.102e-07  6.727e-08   7.585 0.004754 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 3.24 on 3 degrees of freedom
+## Multiple R-squared:  0.9996, Adjusted R-squared:  0.9992 
+## F-statistic:  2400 on 3 and 3 DF,  p-value: 1.443e-05</code></pre>
+<pre class="r"><code>m.4&lt;-lm(Dist~Iniheight+I(Iniheight^2)+I(Iniheight^3)+I(Iniheight^4),
+             data=Galileu)
+summary(m.4)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Dist ~ Iniheight + I(Iniheight^2) + I(Iniheight^3) + 
+##     I(Iniheight^4), data = Galileu)
+## 
+## Residuals:
+##       1       2       3       4       5       6       7 
+##  0.1361 -0.7553  1.9752 -2.1722  0.7122  0.3645 -0.2604 
+## 
+## Coefficients:
+##                  Estimate Std. Error t value Pr(&gt;|t|)   
+## (Intercept)     1.490e+02  8.001e+00  18.619  0.00287 **
+## Iniheight       1.254e+00  9.361e-02  13.395  0.00553 **
+## I(Iniheight^2) -1.853e-03  3.347e-04  -5.535  0.03112 * 
+## I(Iniheight^3)  1.460e-06  4.577e-07   3.190  0.08581 . 
+## I(Iniheight^4) -4.372e-10  2.096e-10  -2.086  0.17232   
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2.227 on 2 degrees of freedom
+## Multiple R-squared:  0.9999, Adjusted R-squared:  0.9996 
+## F-statistic:  3811 on 4 and 2 DF,  p-value: 0.0002624</code></pre>
+<pre class="r"><code>#Increasing the number of powers in the linear regression, we see that we have 
+#an improovment in the prediction model, The model get to answer 99.99% of the
+#response variable. altough, the new variables tend to loose statistical 
+#relevance. For that, we would use the galfit.3</code></pre>
+<ol start="3" style="list-style-type: lower-alpha">
+<li>Based on your models from (b), choose the one that you think
+best represents the data and plot the fitted line on the raw data.
+Add 90 percent confidence bands for mean distance traveled to
+the plot.</li>
+</ol>
+<pre class="r"><code>Galileu %&gt;%
+  ggplot()+
+  aes(x=Dist,y=Iniheight)+
+  geom_point()+
+  ggtitle(&quot;Distance Traveled Vs. Initial Height&quot;)+
+  xlab(&quot;Initial Height&quot;)+
+  ylab(&quot;Distance&quot;) +
+  geom_smooth(method = &quot;lm&quot;)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+</div>
