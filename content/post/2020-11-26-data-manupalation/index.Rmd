@@ -1,0 +1,82 @@
+---
+title: Data manupalation
+author: '''krishsth1'''
+date: '2020-11-26'
+slug: []
+categories:
+  - R
+tags:
+  - dplyr
+output: 
+  html_document: 
+    theme: journal
+    df_print: kable
+---
+
+
+# Data Manupalation
+
+**Here is an example how to solve issues like this if you ever face**
+
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+
+table1 <- dplyr::tibble(
+  x = c(1,1,2,2),
+  y = c("a", "a", "b", "c"),
+  z = c(11,22,33,44)
+)
+table1
+table1 %>% 
+  group_by(y) %>% # We want to group our data on y col
+  summarize( 
+    # summarized cols
+    # values are collapse by "," and we want only unique values
+    x = stringr::str_c(unique(x), collapse = ","),
+    z = stringr::str_c(unique(z), collapse = ",")
+  ) %>%  
+  relocate(y, .after = x)
+
+#Or simply you can do this
+table1 %>%
+  group_by(x,y) %>%
+  summarise(z=stringr::str_c(unique(z),collapse = ","))
+
+
+# or
+
+table1 %>%
+  group_by(x,y) %>%
+  summarise(z=paste0(unique(z),collapse = ","))
+
+```
+  
+  
+  
+**You can clearly see what i wanted to do in above two out put table**
+
+
+
+
+> Solving another issue 
+
+
+
+```{r}
+
+df<-data.frame(country=c("Nepal","Nepal","Nepal","India","India","India"),
+               Sex=c("M","M","M","F","M","F"),try=c(1,2,3,4,5,6),stringsAsFactors = F)
+library(dplyr)
+df<-df%>%
+  group_by(country,Sex) %>%
+  count() %>%
+  ungroup()
+df
+d1 <- expand.grid(country= unique(df$country),Sex=unique(df$Sex))
+df <-left_join(d1,df, by = c("country","Sex")) %>%
+  mutate(n = ifelse(is.na(n),0,n)) %>%
+  arrange(desc(country))
+df
+```
+

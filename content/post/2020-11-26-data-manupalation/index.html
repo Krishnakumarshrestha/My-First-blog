@@ -1,0 +1,104 @@
+---
+title: Data manupalation
+author: '''krishsth1'''
+date: '2020-11-26'
+slug: []
+categories:
+  - R
+tags:
+  - dplyr
+output: 
+  html_document: 
+    theme: journal
+    df_print: kable
+---
+
+<script src="index_files/header-attrs/header-attrs.js"></script>
+<link href="index_files/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="index_files/anchor-sections/anchor-sections.js"></script>
+
+
+<div id="data-manupalation" class="section level1">
+<h1>Data Manupalation</h1>
+<p><strong>Here is an example how to solve issues like this if you ever face</strong></p>
+<pre class="r"><code>library(tidyverse)
+
+table1 &lt;- dplyr::tibble(
+  x = c(1,1,2,2),
+  y = c(&quot;a&quot;, &quot;a&quot;, &quot;b&quot;, &quot;c&quot;),
+  z = c(11,22,33,44)
+)
+table1</code></pre>
+<pre><code>## # A tibble: 4 x 3
+##       x y         z
+##   &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt;
+## 1     1 a        11
+## 2     1 a        22
+## 3     2 b        33
+## 4     2 c        44</code></pre>
+<pre class="r"><code>table1 %&gt;% 
+  group_by(y) %&gt;% # We want to group our data on y col
+  summarize( 
+    # summarized cols
+    # values are collapse by &quot;,&quot; and we want only unique values
+    x = stringr::str_c(unique(x), collapse = &quot;,&quot;),
+    z = stringr::str_c(unique(z), collapse = &quot;,&quot;)
+  ) %&gt;%  
+  relocate(y, .after = x)</code></pre>
+<pre><code>## # A tibble: 3 x 3
+##   x     y     z    
+##   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
+## 1 1     a     11,22
+## 2 2     b     33   
+## 3 2     c     44</code></pre>
+<pre class="r"><code>#Or simply you can do this
+table1 %&gt;%
+  group_by(x,y) %&gt;%
+  summarise(z=stringr::str_c(unique(z),collapse = &quot;,&quot;))</code></pre>
+<pre><code>## # A tibble: 3 x 3
+## # Groups:   x [2]
+##       x y     z    
+##   &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;
+## 1     1 a     11,22
+## 2     2 b     33   
+## 3     2 c     44</code></pre>
+<pre class="r"><code># or
+
+table1 %&gt;%
+  group_by(x,y) %&gt;%
+  summarise(z=paste0(unique(z),collapse = &quot;,&quot;))</code></pre>
+<pre><code>## # A tibble: 3 x 3
+## # Groups:   x [2]
+##       x y     z    
+##   &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;
+## 1     1 a     11,22
+## 2     2 b     33   
+## 3     2 c     44</code></pre>
+<p><strong>You can clearly see what i wanted to do in above two out put table</strong></p>
+<blockquote>
+<p>Solving another issue</p>
+</blockquote>
+<pre class="r"><code>df&lt;-data.frame(country=c(&quot;Nepal&quot;,&quot;Nepal&quot;,&quot;Nepal&quot;,&quot;India&quot;,&quot;India&quot;,&quot;India&quot;),
+               Sex=c(&quot;M&quot;,&quot;M&quot;,&quot;M&quot;,&quot;F&quot;,&quot;M&quot;,&quot;F&quot;),try=c(1,2,3,4,5,6),stringsAsFactors = F)
+library(dplyr)
+df&lt;-df%&gt;%
+  group_by(country,Sex) %&gt;%
+  count() %&gt;%
+  ungroup()
+df</code></pre>
+<pre><code>## # A tibble: 3 x 3
+##   country Sex       n
+##   &lt;chr&gt;   &lt;chr&gt; &lt;int&gt;
+## 1 India   F         2
+## 2 India   M         1
+## 3 Nepal   M         3</code></pre>
+<pre class="r"><code>d1 &lt;- expand.grid(country= unique(df$country),Sex=unique(df$Sex))
+df &lt;-left_join(d1,df, by = c(&quot;country&quot;,&quot;Sex&quot;)) %&gt;%
+  mutate(n = ifelse(is.na(n),0,n))
+df</code></pre>
+<pre><code>##   country Sex n
+## 1   India   F 2
+## 2   Nepal   F 0
+## 3   India   M 1
+## 4   Nepal   M 3</code></pre>
+</div>
