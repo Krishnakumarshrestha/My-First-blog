@@ -1,12 +1,9 @@
 ---
-title: "Untitled"
-description: |
-  A new article created using the Distill format.
+title: "Using dplyr"
+
 author:
-  - name: Nora Jones 
-    url: https://example.com/norajones
-    affiliation: Spacely Sprockets
-    affiliation_url: https://example.com/spacelysprokets
+  - name: Krishna Kumar Shrestha
+    
 date: "2020-11-28"
 output: distill::distill_article
 ---
@@ -135,22 +132,16 @@ head(data4)</code></pre>
 </ol>
 <p><strong>lets assume that we want mean pressure every year. this can be done using group_by() and Summarize()</strong></p>
 <pre class="r"><code>data5&lt;- storms %&gt;%
-  group_by(year,pressure) %&gt;%
+  group_by(year) %&gt;%
   summarise(mean_pressure=mean(pressure,na.rm = T))
-data5</code></pre>
-<pre><code>## # A tibble: 2,211 x 3
-## # Groups:   year [41]
-##     year pressure mean_pressure
-##    &lt;dbl&gt;    &lt;int&gt;         &lt;dbl&gt;
-##  1  1975      963           963
-##  2  1975      965           965
-##  3  1975      970           970
-##  4  1975      973           973
-##  5  1975      981           981
-##  6  1975      984           984
-##  7  1975      986           986
-##  8  1975      987           987
-##  9  1975      989           989
-## 10  1975      990           990
-## # ... with 2,201 more rows</code></pre>
+head(data5)</code></pre>
+<pre><code>## # A tibble: 6 x 2
+##    year mean_pressure
+##   &lt;dbl&gt;         &lt;dbl&gt;
+## 1  1975          995.
+## 2  1976          989.
+## 3  1977          995.
+## 4  1978         1006.
+## 5  1979          995.
+## 6  1980          995.</code></pre>
 </div>

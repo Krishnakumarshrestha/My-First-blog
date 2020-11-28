@@ -126,5 +126,5 @@ head(data4)
 data5<- storms %>%
   group_by(year) %>%
   summarise(mean_pressure=mean(pressure,na.rm = T))
-data5
+head(data5)
 ```
