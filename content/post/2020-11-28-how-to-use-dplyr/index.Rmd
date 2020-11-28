@@ -1,0 +1,133 @@
+---
+title: "Untitled"
+description: |
+  A new article created using the Distill format.
+author:
+  - name: Nora Jones 
+    url: https://example.com/norajones
+    affiliation: Spacely Sprockets
+    affiliation_url: https://example.com/spacelysprokets
+date: "`r Sys.Date()`"
+output: distill::distill_article
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
+
+```
+
+# How to use dplyr
+
+> To install the package, write
+
+> install.packages("dplyr")
+
+**After the package has been installed, you have to load it with the following command**
+
+```{r}
+library(dplyr)
+```
+
+**The main commands of the dplyr package are:**
+
+1.  **select()**: choosing a subset of columns
+
+2.   **filter()**: choosing a subset of rows
+
+3.  **arrange()**: sort the rows
+
+4.  **mutate()**: add new columns
+
+5.  **summarise()**: aggregates the values
+
+6.  **group\_by()**: change the data into grouped data in order to apply functions to each of the groups separately
+
+**Next we will show you some simple examples to demonstrate the functionality of dplyr package.**
+
+# **lets take a data set first.For this example i have taken storms data set .**
+
+```{r}
+data("storms")
+head(storms)
+```
+
+1.  <div>
+
+    # **select(): how to use** 
+
+    </div>
+
+**lets assume that we want name,year,month,and day column form the storm data set. this can be done using select()**
+
+```{r}
+data1<-storms %>%
+  select(name,year,month,day)
+head(data1)
+```
+
+2.  <div>
+
+    # filter(): How to use it?
+
+    </div>
+
+**lets assume that we want name,year,month=12,and day column form the storm data set. this can be done using select() and filter()**
+
+```{r}
+data2<- storms %>%
+  select(name,year,month,day) %>%
+  filter(month==12)
+head(data2)
+
+```
+
+3.  <div>
+
+    # arrange(): How to use it
+
+    </div>
+
+**lets assume that we want name,year,month=12,and day column form the storm data set and arrange it in ascending order of year,day . this can be done using select() ,filter() and arrange**
+
+```{r}
+data3<-storms %>%
+  select(name,year,month,day) %>%
+  filter(month==12) %>%
+  arrange(year,day)
+head(data3)
+```
+
+4.  <div>
+
+    # mutate(): How to use it?
+
+    </div>
+
+**lets assume that we want name,year,month=12,and day column form the storm data set and create new column with month-1**
+
+```{r}
+data4<- storms %>%
+  select(name,year,month,day) %>%
+  filter(month==12) %>%
+  mutate(new_month=month-1)
+head(data4)
+```
+
+5.  <div>
+
+    # group\_by() and summarize(): how to use?
+
+    </div>
+
+**lets assume that we want mean pressure every year. this can be done using group\_by() and Summarize()**
+
+```{r}
+data5<- storms %>%
+  group_by(year,pressure) %>%
+  summarise(mean_pressure=mean(pressure,na.rm = T))
+data5
+```

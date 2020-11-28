@@ -1,0 +1,156 @@
+---
+title: "Untitled"
+description: |
+  A new article created using the Distill format.
+author:
+  - name: Nora Jones 
+    url: https://example.com/norajones
+    affiliation: Spacely Sprockets
+    affiliation_url: https://example.com/spacelysprokets
+date: "2020-11-28"
+output: distill::distill_article
+---
+
+<script src="index_files/header-attrs/header-attrs.js"></script>
+<link href="index_files/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="index_files/anchor-sections/anchor-sections.js"></script>
+
+
+<div id="how-to-use-dplyr" class="section level1">
+<h1>How to use dplyr</h1>
+<blockquote>
+<p>To install the package, write</p>
+</blockquote>
+<blockquote>
+<p>install.packages(“dplyr”)</p>
+</blockquote>
+<p><strong>After the package has been installed, you have to load it with the following command</strong></p>
+<pre class="r"><code>library(dplyr)</code></pre>
+<p><strong>The main commands of the dplyr package are:</strong></p>
+<ol style="list-style-type: decimal">
+<li><p><strong>select()</strong>: choosing a subset of columns</p></li>
+<li><p><strong>filter()</strong>: choosing a subset of rows</p></li>
+<li><p><strong>arrange()</strong>: sort the rows</p></li>
+<li><p><strong>mutate()</strong>: add new columns</p></li>
+<li><p><strong>summarise()</strong>: aggregates the values</p></li>
+<li><p><strong>group_by()</strong>: change the data into grouped data in order to apply functions to each of the groups separately</p></li>
+</ol>
+<p><strong>Next we will show you some simple examples to demonstrate the functionality of dplyr package.</strong></p>
+</div>
+<div id="lets-take-a-data-set-first.for-this-example-i-have-taken-storms-data-set-." class="section level1">
+<h1><strong>lets take a data set first.For this example i have taken storms data set .</strong></h1>
+<pre class="r"><code>data(&quot;storms&quot;)
+head(storms)</code></pre>
+<pre><code>## # A tibble: 6 x 13
+##   name   year month   day  hour   lat  long status category  wind pressure
+##   &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  &lt;ord&gt;    &lt;int&gt;    &lt;int&gt;
+## 1 Amy    1975     6    27     0  27.5 -79   tropi~ -1          25     1013
+## 2 Amy    1975     6    27     6  28.5 -79   tropi~ -1          25     1013
+## 3 Amy    1975     6    27    12  29.5 -79   tropi~ -1          25     1013
+## 4 Amy    1975     6    27    18  30.5 -79   tropi~ -1          25     1013
+## 5 Amy    1975     6    28     0  31.5 -78.8 tropi~ -1          25     1012
+## 6 Amy    1975     6    28     6  32.4 -78.7 tropi~ -1          25     1012
+## # ... with 2 more variables: ts_diameter &lt;dbl&gt;, hu_diameter &lt;dbl&gt;</code></pre>
+<ol style="list-style-type: decimal">
+<li><div>
+<h1 id="select-how-to-use"><strong>select(): how to use</strong></h1>
+</div></li>
+</ol>
+<p><strong>lets assume that we want name,year,month,and day column form the storm data set. this can be done using select()</strong></p>
+<pre class="r"><code>data1&lt;-storms %&gt;%
+  select(name,year,month,day)
+head(data1)</code></pre>
+<pre><code>## # A tibble: 6 x 4
+##   name   year month   day
+##   &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt;
+## 1 Amy    1975     6    27
+## 2 Amy    1975     6    27
+## 3 Amy    1975     6    27
+## 4 Amy    1975     6    27
+## 5 Amy    1975     6    28
+## 6 Amy    1975     6    28</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li><div>
+<h1 id="filter-how-to-use-it">filter(): How to use it?</h1>
+</div></li>
+</ol>
+<p><strong>lets assume that we want name,year,month=12,and day column form the storm data set. this can be done using select() and filter()</strong></p>
+<pre class="r"><code>data2&lt;- storms %&gt;%
+  select(name,year,month,day) %&gt;%
+  filter(month==12)
+head(data2)</code></pre>
+<pre><code>## # A tibble: 6 x 4
+##   name   year month   day
+##   &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt;
+## 1 Lili   1984    12    20
+## 2 Lili   1984    12    20
+## 3 Lili   1984    12    21
+## 4 Lili   1984    12    21
+## 5 Lili   1984    12    21
+## 6 Lili   1984    12    21</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li><div>
+<h1 id="arrange-how-to-use-it">arrange(): How to use it</h1>
+</div></li>
+</ol>
+<p><strong>lets assume that we want name,year,month=12,and day column form the storm data set and arrange it in ascending order of year,day . this can be done using select() ,filter() and arrange</strong></p>
+<pre class="r"><code>data3&lt;-storms %&gt;%
+  select(name,year,month,day) %&gt;%
+  filter(month==12) %&gt;%
+  arrange(year,day)
+head(data3)</code></pre>
+<pre><code>## # A tibble: 6 x 4
+##   name   year month   day
+##   &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt;
+## 1 Lili   1984    12    20
+## 2 Lili   1984    12    20
+## 3 Lili   1984    12    21
+## 4 Lili   1984    12    21
+## 5 Lili   1984    12    21
+## 6 Lili   1984    12    21</code></pre>
+<ol start="4" style="list-style-type: decimal">
+<li><div>
+<h1 id="mutate-how-to-use-it">mutate(): How to use it?</h1>
+</div></li>
+</ol>
+<p><strong>lets assume that we want name,year,month=12,and day column form the storm data set and create new column with month-1</strong></p>
+<pre class="r"><code>data4&lt;- storms %&gt;%
+  select(name,year,month,day) %&gt;%
+  filter(month==12) %&gt;%
+  mutate(new_month=month-1)
+head(data4)</code></pre>
+<pre><code>## # A tibble: 6 x 5
+##   name   year month   day new_month
+##   &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt;     &lt;dbl&gt;
+## 1 Lili   1984    12    20        11
+## 2 Lili   1984    12    20        11
+## 3 Lili   1984    12    21        11
+## 4 Lili   1984    12    21        11
+## 5 Lili   1984    12    21        11
+## 6 Lili   1984    12    21        11</code></pre>
+<ol start="5" style="list-style-type: decimal">
+<li><div>
+<h1 id="group_by-and-summarize-how-to-use">group_by() and summarize(): how to use?</h1>
+</div></li>
+</ol>
+<p><strong>lets assume that we want mean pressure every year. this can be done using group_by() and Summarize()</strong></p>
+<pre class="r"><code>data5&lt;- storms %&gt;%
+  group_by(year,pressure) %&gt;%
+  summarise(mean_pressure=mean(pressure,na.rm = T))
+data5</code></pre>
+<pre><code>## # A tibble: 2,211 x 3
+## # Groups:   year [41]
+##     year pressure mean_pressure
+##    &lt;dbl&gt;    &lt;int&gt;         &lt;dbl&gt;
+##  1  1975      963           963
+##  2  1975      965           965
+##  3  1975      970           970
+##  4  1975      973           973
+##  5  1975      981           981
+##  6  1975      984           984
+##  7  1975      986           986
+##  8  1975      987           987
+##  9  1975      989           989
+## 10  1975      990           990
+## # ... with 2,201 more rows</code></pre>
+</div>
