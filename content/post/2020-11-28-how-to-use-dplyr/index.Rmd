@@ -1,12 +1,9 @@
 ---
-title: "Untitled"
-description: |
-  A new article created using the Distill format.
+title: "Using dplyr"
+
 author:
-  - name: Nora Jones 
-    url: https://example.com/norajones
-    affiliation: Spacely Sprockets
-    affiliation_url: https://example.com/spacelysprokets
+  - name: Krishna Kumar Shrestha
+    
 date: "`r Sys.Date()`"
 output: distill::distill_article
 ---
@@ -127,7 +124,7 @@ head(data4)
 
 ```{r}
 data5<- storms %>%
-  group_by(year,pressure) %>%
+  group_by(year) %>%
   summarise(mean_pressure=mean(pressure,na.rm = T))
 data5
 ```
