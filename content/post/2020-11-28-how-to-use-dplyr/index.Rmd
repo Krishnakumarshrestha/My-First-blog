@@ -33,7 +33,7 @@ library(dplyr)
 
 1.  **select()**: choosing a subset of columns
 
-2.   **filter()**: choosing a subset of rows
+2.  **filter()**: choosing a subset of rows
 
 3.  **arrange()**: sort the rows
 
@@ -54,7 +54,7 @@ head(storms)
 
 1.  <div>
 
-    # **select(): how to use** 
+    # **select(): how to use**
 
     </div>
 

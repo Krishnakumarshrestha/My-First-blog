@@ -1,7 +1,8 @@
 baseurl = "/"
 languageCode = "en-us"
-title = "A Hugo website"
+title = "Personal Blog:Krishna Kumar Shrestha"
 theme = "hugo-lithium"
+
 googleAnalytics = ""
 disqusShortname = ""
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_cache$", "\\.knit\\.md$", "\\.utf8\\.md$"]
@@ -31,7 +32,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_cache$", "\\.knit\\.md$", "\\.utf8\
     MathJaxCDN = "//cdnjs.cloudflare.com/ajax/libs"
     MathJaxVersion = "2.7.5"
 
-   
+   author = "Krishna Kumar Shrestha"
     
     [params.Logo]
     url = "download.png"
