@@ -1,0 +1,188 @@
+---
+title: "Simulating Insurance Claims"
+
+author:
+  - name: Krishna Kumar Shrestha 
+date: "2020-12-06"
+output: distill::distill_article
+---
+
+<script src="index_files/header-attrs/header-attrs.js"></script>
+<link href="index_files/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="index_files/anchor-sections/anchor-sections.js"></script>
+<script src="index_files/kePrint/kePrint.js"></script>
+<link href="index_files/lightable/lightable.css" rel="stylesheet" />
+<link href="index_files/bsTable/bootstrapTable.min.css" rel="stylesheet" />
+<script src="index_files/bsTable/bootstrapTable.js"></script>
+
+
+<style type="text/css">
+   
+h1 {
+  color: black;
+  text-align: center;
+}
+h2 {
+  color: blues9;
+  text-align: center;
+}
+p {
+  font-family: verdana;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+table {
+  width: 100%;
+}
+
+</style>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>R is very good tool for simulation. In this small blog post , i will show a basic code on how we can perform simulation of insurance claims.</p>
+<div id="problem-and-assumption" class="section level2">
+<h2>1. Problem and Assumption</h2>
+<p>Before we execute any R code, we need to make assumption of the problem. Lets discuss it step by step.</p>
+<ol style="list-style-type: decimal">
+<li><p>lets consider that we are writing 1000 identical insurance policies next year</p></li>
+<li><p>We want to measure the losses we expect to pay on claims resulting from these policies. Lets assume that there is 10% chance that a single policy having claim.</p></li>
+<li><p>we will use discrete probability distribution (Poisson distribution ) to simulate the frequency</p></li>
+<li><p>then we will need to simulate loss amount for each claim. For this we will use log normal distribution with a log mean of 9 and a log standard deviation of 1.75.</p></li>
+</ol>
+<p>In real world probability of single policy having claim and distribution to be used is determined by actuary .</p>
+</div>
+<div id="single-frequency-and-severity-observation" class="section level2">
+<h2>2.Single frequency and severity observation</h2>
+<p>for reproducing same simulation lets set the seed</p>
+<pre class="r"><code>set.seed(101)</code></pre>
+<p>now lets generate a single frequency from the poisson distribution.</p>
+<pre class="r"><code>lamda&lt;- 1000*0.1
+freq&lt;- rpois(n=1,lambda = lamda)
+freq</code></pre>
+<pre><code>## [1] 96</code></pre>
+<p>Now lets generate a seventies. Each severity represent the ultimate value of 1 claim.</p>
+<pre class="r"><code>s&lt;- rlnorm(n=freq,meanlog = 9,sdlog = 1.75)
+s</code></pre>
+<pre><code>##  [1]   16494.6915    3237.5594    3815.6687    9911.7453   21004.3671
+##  [6]  109549.4234   12084.0678    2149.2501     367.8502  162989.7116
+## [11]   16762.2283   34415.1330    4956.6722   16626.1394    3591.5584
+## [16]    1454.4070   87935.6729   38720.8479  100384.6441    6278.6905
+## [21]    3806.3890    2266.3558   87842.8922     925.6193    6055.1188
+## [26]   24235.4854   32010.6728    8796.2037   11973.4288   37669.5896
+## [31]  620317.0156   21953.5924    3320.1737  125594.7571  117348.3768
+## [36]   47121.6039    2921.5986    2159.5977  169773.5367   30536.1506
+## [41]  328289.5969  150739.0909    5898.5053     209.1928   89175.4712
+## [46]    1665.1902   45023.6992    2257.0307     550.7948     249.2587
+## [51]   53498.3274    3925.6968     357.2674  742464.0186     377.3390
+## [56]   68413.3651  314826.2083    8481.4221   13413.8053    1222.8395
+## [61]   10106.0228   37544.7524    7244.7752     793.8730    4501.6649
+## [66]    3213.9754    7433.8037  115506.3500   18208.7656    2831.7991
+## [71]    3458.5469    1497.9626   16072.3840    6097.3427    6764.3159
+## [76]  161313.5916    2194.7301   29700.6294   63916.2753   19345.3911
+## [81]   10566.6111 2151609.9032   78964.6884   12540.0525  331630.7098
+## [86]   25367.5486  430014.6202   40352.4935   17636.3585   28253.0039
+## [91]    2491.8780     125.2502     914.2403    1912.7917     194.1251
+## [96]    2766.7660</code></pre>
+<p>In the above example our frequency was 96 and by summing the severities of these 96 claims we arrive at the observation total of 7493485</p>
+</div>
+<div id="run-for-many-obesrvation" class="section level2">
+<h2>3.Run for many obesrvation</h2>
+<p>Above we learned how to run a single observations. by inspecting the results of many observations we can determine the confidence level of experiencing different loss amount.</p>
+<p>lets assume the number of observation this time be 1000.</p>
+<pre class="r"><code>n&lt;-1000</code></pre>
+<p>Generating frequncy</p>
+<pre class="r"><code>freq&lt;-rpois(n=n,lambda = lamda)</code></pre>
+<p>G<strong>enerating Seventies</strong></p>
+<pre class="r"><code>obs&lt;-purrr::map(freq,function(freq)rlnorm(n=freq,meanlog = 9,sdlog = 1.75))</code></pre>
+<p><strong>Presenting in table</strong></p>
+<pre class="r"><code>library(dplyr)
+i&lt;-0
+obs&lt;- purrr::map(obs,function(sev){
+  i=i+1
+  data.frame(
+    ob=i,
+    sev=sev
+  )
+})
+
+obs&lt;- dplyr::bind_rows(obs)
+kableExtra::kbl(head(obs,5))</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:right;">
+ob
+</th>
+<th style="text-align:right;">
+sev
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+4587.363
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1906.677
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+55341.219
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+174495.517
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+4590.121
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="inspection-of-results" class="section level2">
+<h2>4.Inspection of results</h2>
+<div id="plot-the-distribution-of-observation" class="section level3">
+<h3>Plot the distribution of observation</h3>
+<pre class="r"><code>library(ggplot2)
+
+obs %&gt;%
+  ggplot()+
+  aes(sev)+
+  geom_histogram()</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+</div>
+<div id="view-summary" class="section level3">
+<h3>View summary</h3>
+<pre class="r"><code>summary(obs$sev)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##       4    2496    8148   36556   26483 9012232</code></pre>
+</div>
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>Conclusion</h1>
+<p><strong>Simulations allow you to answer highly complicated questions that would be impossible to solve directly from math equations and probability density function.</strong></p>
+</div>

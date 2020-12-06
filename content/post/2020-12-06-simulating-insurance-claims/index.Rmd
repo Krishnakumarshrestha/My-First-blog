@@ -1,0 +1,153 @@
+---
+title: "Simulating Insurance Claims"
+
+author:
+  - name: Krishna Kumar Shrestha 
+date: "`r Sys.Date()`"
+output: distill::distill_article
+---
+
+```{css, echo=FALSE}
+   
+h1 {
+  color: black;
+  text-align: center;
+}
+h2 {
+  color: blues9;
+  text-align: center;
+}
+p {
+  font-family: verdana;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+table {
+  width: 100%;
+}
+
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
+```
+
+# Introduction
+
+R is very good tool for simulation. In this small blog post , i will show a basic code on how we can perform simulation of insurance claims.
+
+## 1. Problem and Assumption
+
+Before we execute any R code, we need to make assumption of the problem. Lets discuss it step by step. 
+
+1. lets consider that we are writing 1000 identical insurance policies next year
+
+2.  We want to measure the losses we expect to pay on claims resulting from these policies. Lets assume that there is 10% chance that a single policy having claim.
+
+3.  we will use discrete probability distribution (Poisson distribution ) to simulate the frequency
+
+4.  then we will need to simulate loss amount for each claim. For this we will use log normal distribution with a log mean of 9 and a log standard deviation of 1.75.
+
+In real world probability of single policy having claim and distribution to be used is determined by actuary .
+
+## 2.Single frequency and severity observation
+
+for reproducing same simulation lets set the seed
+
+```{r}
+set.seed(101)
+```
+
+now lets generate a single frequency from the poisson distribution.
+
+```{r}
+lamda<- 1000*0.1
+freq<- rpois(n=1,lambda = lamda)
+freq
+```
+
+Now lets generate a seventies. Each severity represent the ultimate value of 1 claim.
+
+```{r}
+s<- rlnorm(n=freq,meanlog = 9,sdlog = 1.75)
+s
+```
+
+In the above example our frequency was 96 and by summing the severities of these 96 claims we arrive at the observation total of 7493485
+
+## 3.Run for many obesrvation
+
+Above we learned how to run a single observations. by inspecting the results of many observations we can determine the confidence level of experiencing different loss amount.
+
+lets assume the number of observation this time be 1000.
+
+```{r}
+n<-1000
+
+```
+
+Generating frequncy
+
+```{r}
+
+freq<-rpois(n=n,lambda = lamda)
+
+```
+
+G**enerating Seventies**
+
+```{r}
+obs<-purrr::map(freq,function(freq)rlnorm(n=freq,meanlog = 9,sdlog = 1.75))
+```
+
+**Presenting in table**
+
+```{r}
+library(dplyr)
+i<-0
+obs<- purrr::map(obs,function(sev){
+  i=i+1
+  data.frame(
+    ob=i,
+    sev=sev
+  )
+})
+
+obs<- dplyr::bind_rows(obs)
+kableExtra::kbl(head(obs,5))
+
+
+
+```
+
+## 4.Inspection of results
+
+### Plot the distribution of observation
+
+```{r}
+
+library(ggplot2)
+
+obs %>%
+  ggplot()+
+  aes(sev)+
+  geom_histogram()
+
+```
+
+### View summary
+
+```{r}
+
+summary(obs$sev)
+
+```
+
+# Conclusion
+
+**Simulations allow you to answer highly complicated questions that would be impossible to solve directly from math equations and probability density function.**
